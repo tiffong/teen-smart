@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Mobile Mentor",
   "main": "webServer.js",
-   "start": "webServer.js",
+  "start": "webServer.js",
   "scripts": {
     "test": "echo  echo Test your code by opening http://localhost:3000 in your browser."
   },
