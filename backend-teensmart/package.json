@@ -1,0 +1,19 @@
+{
+  "name": "backend-teensmart",
+  "version": "1.0.0",
+  "description": "Mobile Mentor",
+  "main": "webServer.js",
+   "start": "webServer.js",
+  "scripts": {
+    "test": "echo  echo Test your code by opening http://localhost:3000 in your browser."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "jshint": "^2.9.5",
+    "mongoose": "^5.0.14"
+  }
+}
