@@ -2,6 +2,10 @@
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "scripts": {
+    "start": "exp start",
+    "eject": "react-native-scripts eject",
+    "android": "react-native-scripts android",
+    "ios": "react-native-scripts ios",
     "test": "node ./node_modules/jest/bin/jest.js --watchAll"
   },
   "jest": {
@@ -10,8 +14,11 @@
   "dependencies": {
     "@expo/samples": "2.1.1",
     "expo": "26.0.0",
+    "jwt-decode": "^2.2.0",
     "react": "16.3.0-alpha.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-26.0.0.tar.gz",
+    "react-native-auth0": "^1.2.2",
+    "react-native-scripts": "^1.13.1",
     "react-navigation": "1.5.10"
   },
   "devDependencies": {
