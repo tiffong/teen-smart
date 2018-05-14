@@ -33,22 +33,27 @@ function toQueryString(params) {
     .join('&');
 }
 
-export default class App extends React.Component {
+export default class Login extends React.Component {
   state = {
     username: undefined,
+    profile: undefined,
+    webServer: 'http://'+credentials.address+':3000',
   };
 
   _loginWithAuth0 = async () => {
     const redirectUrl = AuthSession.getRedirectUrl();
     console.log(`Redirect URL (add this to Auth0): ${redirectUrl}`);
-    
-    const result = await AuthSession.startAsync({
-      authUrl: `${auth0Domain}/authorize` + toQueryString({
+
+    loginParams = {
+        audience: auth0Domain+'/userinfo',
         client_id: auth0ClientId,
         response_type: 'token',
-        scope: 'openid name',
+        scope: 'openid profile',
         redirect_uri: redirectUrl,
-      }),
+      }
+    console.log(loginParams) 
+    const result = await AuthSession.startAsync({
+      authUrl: `${auth0Domain}/authorize` + toQueryString(loginParams),
     });
 
     console.log(result);
@@ -57,25 +62,7 @@ export default class App extends React.Component {
     }
   }
 
-  _loginWithAuth0Twitter = async () => {
-    const redirectUrl = AuthSession.getRedirectUrl();
-    const result = await AuthSession.startAsync({
-      authUrl: `${auth0Domain}/authorize` + toQueryString({
-        connection: 'twitter',
-        client_id: auth0ClientId,
-        response_type: 'token',
-        scope: 'openid name',
-        redirect_uri: redirectUrl,
-      }),
-    });
-
-    console.log(result);
-    if (result.type === 'success') {
-      this.handleParams(result.params);
-    }
-  }
-
-  handleParams = (responseObj) => {
+  handleParams = async (responseObj) => {
     if (responseObj.error) {
       Alert.alert('Error', responseObj.error_description
         || 'something went wrong while logging in');
@@ -83,10 +70,59 @@ export default class App extends React.Component {
     }
     const encodedToken = responseObj.access_token;
 
-{/* const decodedToken = jwtDecoder(encodedToken);
-    console.log(decodedToken);
-    const username = decodedToken.name;
-    this.setState({ username });*/}
+    {/*getting profile information from backend*/}
+    var details = {
+        'token': encodedToken,
+    };
+
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    var request = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'Authorization': 'Bearer '+encodedToken,
+      },
+      body: formBody
+    }
+
+    console.log(request);
+
+    try{
+
+    let response = await fetch("https://teensmart.auth0.com/userinfo", request); 
+    let responseData = await response.json();
+    console.log(responseData);
+
+    this.setState(previousState => {
+      return { username: responseData.name };
+    });
+
+    }catch (error) { console.log(error);}
+
+
+{/**
+    var request = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: formBody
+    }
+    console.log(request);
+    try{
+    let response = await fetch(this.state.webServer + "/getProfile", request); 
+    let responseData = await response.json();
+    console.log(responseData);
+    }catch (error) { console.log(error);}
+**/}
+
   }
 
   render() {
@@ -95,10 +131,9 @@ export default class App extends React.Component {
         {this.state.username !== undefined ?
           <Text style={styles.title}>Hi {this.state.username}!</Text> :
           <View>
-            <Text style={styles.title}>Example: Auth0 login</Text>
+            <Text style={styles.title}>Click to Login</Text>
             <Button title="Login with Auth0" onPress={this._loginWithAuth0} />
-            <Text style={styles.title}>Example: Auth0 force Twitter</Text>
-            <Button title="Login with Auth0-Twitter" onPress={this._loginWithAuth0Twitter} />
+
           </View>
         }
       </View>
