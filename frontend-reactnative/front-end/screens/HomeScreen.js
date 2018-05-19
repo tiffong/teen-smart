@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { AppRegistry} from 'react-native';
+import CustomMultiPicker from "react-native-multiple-select-list";
+
 import {
   Image,
   Platform,
@@ -12,7 +15,31 @@ import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
 
+class Greeting extends Component {
+  render() {
+    return (
+      <Text>Hola, {this.props.name}!</Text>
+
+    );
+  }
+}
+
+const userList = {
+  "123":"Muy Buenas",
+  "124":"Buenas",
+  "125":"Malas",
+  "126": "Muy Malas"
+}
+
+const question2 = {
+  "123":"Nunca",
+  "124":"Rara vez",
+  "125":"A menudo",
+  "126": "Siempre"
+}
+
 export default class HomeScreen extends React.Component {
+
   static navigationOptions = {
     header: null,
   };
@@ -20,46 +47,46 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             <Image
               source={
                 __DEV__
-                  ? require('../assets/images/robot-dev.png')
-                  : require('../assets/images/robot-prod.png')
+                  ? require('../assets/images/joven.png')
+                  : require('../assets/images/joven.png')
               }
               style={styles.welcomeImage}
             />
           </View>
 
+
           <View style={styles.getStartedContainer}>
             {this._maybeRenderDevelopmentModeWarning()}
 
-            <Text style={styles.getStartedText}>Get started by opening</Text>
+//MY CODE STARTS HERE
 
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View>
 
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
+            <TouchableOpacity
+                    style={styles.firstButton}
+                    onPress={() =>  this.props.navigation.navigate('Survey')}
+                    underlayColor="gray"
+                  >
+                    <Text> Perfil de Salud </Text>
+            </TouchableOpacity>
+
+        <TouchableOpacity
+                style={styles.firstButton}
+                onPress={() =>  this.props.navigation.navigate('Survey')}
+                underlayColor="gray"
+              >
+                <Text> Perfil de Proteccion </Text>
+        </TouchableOpacity>
+
+
           </View>
 
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
-          </View>
         </ScrollView>
-
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
-        </View>
       </View>
     );
   }
@@ -68,16 +95,20 @@ export default class HomeScreen extends React.Component {
     if (__DEV__) {
       const learnMoreButton = (
         <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
+Sitio web de Joven Salud
         </Text>
       );
 
+      //MY CODE HERE
       return (
+        <View>
+
         <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
+          {learnMoreButton}
         </Text>
+        </View>
       );
+
     } else {
       return (
         <Text style={styles.developmentModeText}>
@@ -88,7 +119,7 @@ export default class HomeScreen extends React.Component {
   }
 
   _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
+    WebBrowser.openBrowserAsync('https://jovensalud.net/web/index.jsp');
   };
 
   _handleHelpPress = () => {
@@ -99,6 +130,15 @@ export default class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+
+  firstButton: {
+      alignItems: 'center',
+      marginBottom: 40,
+      padding: 20,
+      width: 250,
+      backgroundColor: '#ee8424',
+      borderRadius: 5
+    },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -119,7 +159,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   welcomeImage: {
-    width: 100,
+    width: 300,
     height: 80,
     resizeMode: 'contain',
     marginTop: 3,
@@ -127,7 +167,7 @@ const styles = StyleSheet.create({
   },
   getStartedContainer: {
     alignItems: 'center',
-    marginHorizontal: 50,
+    marginHorizontal: 25,
   },
   homeScreenFilename: {
     marginVertical: 7,

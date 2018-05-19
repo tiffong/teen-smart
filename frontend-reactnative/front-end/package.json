@@ -12,6 +12,8 @@
     "expo": "26.0.0",
     "react": "16.3.0-alpha.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-26.0.0.tar.gz",
+    "react-native-multiple-choice": "0.0.8",
+    "react-native-multiple-select-list": "^1.0.4",
     "react-navigation": "1.5.10"
   },
   "devDependencies": {

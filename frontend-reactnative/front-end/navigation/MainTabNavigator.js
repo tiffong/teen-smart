@@ -8,6 +8,7 @@ import Colors from '../constants/Colors';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import GlobalSurvey from '../screens/newScreen';
 
 export default TabNavigator(
   {
@@ -20,6 +21,11 @@ export default TabNavigator(
     Settings: {
       screen: SettingsScreen,
     },
+    Survey: {
+      screen: GlobalSurvey,
+    }
+
+
   },
   {
     navigationOptions: ({ navigation }) => ({
@@ -39,6 +45,10 @@ export default TabNavigator(
           case 'Settings':
             iconName =
               Platform.OS === 'ios' ? `ios-options${focused ? '' : '-outline'}` : 'md-options';
+          case 'Survey':
+            iconName =
+              Platform.OS === 'ios' ? `ios-options${focused ? '' : '-outline'}` : 'md-options';
+                  
         }
         return (
           <Ionicons
