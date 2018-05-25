@@ -1,44 +1,31 @@
 import React, { Component } from 'react';
 import { AppRegistry} from 'react-native';
 import CustomMultiPicker from "react-native-multiple-select-list";
+import React from 'react';
+import { Button } from 'react-native';
 
 import {
   Image,
+  AppRegistry,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableHighlight,
   View,
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
 
-class Greeting extends Component {
-  render() {
-    return (
-      <Text>Hola, {this.props.name}!</Text>
-
-    );
-  }
-}
-
-const userList = {
-  "123":"Muy Buenas",
-  "124":"Buenas",
-  "125":"Malas",
-  "126": "Muy Malas"
-}
-
-const question2 = {
-  "123":"Nunca",
-  "124":"Rara vez",
-  "125":"A menudo",
-  "126": "Siempre"
-}
+import { StackNavigator } from 'react-navigation';
 
 export default class HomeScreen extends React.Component {
+  constructor(props) {
+  super(props)
+  this.state = { count: 0 }
+}
 
   static navigationOptions = {
     header: null,
@@ -47,9 +34,8 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
+            <Text style={styles.developmentModeText}> Bienvenido </Text>
             <Image
               source={
                 __DEV__
@@ -59,74 +45,44 @@ export default class HomeScreen extends React.Component {
               style={styles.welcomeImage}
             />
           </View>
-
-
           <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
+            <Text style={styles.getStartedText}>VIVE TU JUVENTUD. CUIDA TU SALUD. </Text>
 
-//MY CODE STARTS HERE
-
-
-            <TouchableOpacity
-                    style={styles.firstButton}
-                    onPress={() =>  this.props.navigation.navigate('Survey')}
-                    underlayColor="gray"
-                  >
-                    <Text> Perfil de Salud </Text>
-            </TouchableOpacity>
-
-        <TouchableOpacity
-                style={styles.firstButton}
-                onPress={() =>  this.props.navigation.navigate('Survey')}
-                underlayColor="gray"
-              >
-                <Text> Perfil de Proteccion </Text>
-        </TouchableOpacity>
-
-
+            <Text style={styles.description}>Obten una mejor experiencia al llenar las siguientes encuestas:. </Text>
           </View>
 
-        </ScrollView>
+          <TouchableOpacity
+            style={styles.firstButton}
+            onPress={() =>  this.props.navigation.navigate('Links')}
+            underlayColor="gray"
+          >
+            <Text> Primera Encuesta </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.firstButton}
+            onPress={() =>  this.props.navigation.navigate('Links')}
+          >
+            <Text> Segunda Encuesta </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.firstButton}
+            onPress={() =>  this.props.navigation.navigate('Links')}
+          >
+            <Text> Tercera Encuesta </Text>
+          </TouchableOpacity>
       </View>
     );
   }
 
   _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-Sitio web de Joven Salud
-        </Text>
-      );
-
-      //MY CODE HERE
-      return (
-        <View>
-
-        <Text style={styles.developmentModeText}>
-          {learnMoreButton}
-        </Text>
-        </View>
-      );
-
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://jovensalud.net/web/index.jsp');
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
+    return (
+      <Text style={styles.developmentModeText}>
+        Bienvenido
+      </Text>
     );
-  };
+  }
 }
 
 const styles = StyleSheet.create({
@@ -142,16 +98,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    alignItems: 'center',
+    paddingTop: 30
+  },
+  firstButton: {
+    alignItems: 'center',
+    marginBottom: 40,
+    padding: 20,
+    width: 250,
+    backgroundColor: '#ee8424',
+    borderRadius: 5
   },
   developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
+    marginTop: 10,
+    fontSize: 25,
+    color: 'rgba(96,100,109, 1)',
+    lineHeight: 25,
     textAlign: 'center',
   },
-  contentContainer: {
-    paddingTop: 30,
+  description: {
+    marginTop: 30,
+    marginBottom: 20,
+    color: 'grey',
+    fontSize: 13,
+    lineHeight: 13,
+    textAlign: 'center',
   },
   welcomeContainer: {
     alignItems: 'center',
@@ -159,10 +130,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   welcomeImage: {
-    width: 300,
-    height: 80,
+    width: 250,
+    height: 100,
     resizeMode: 'contain',
-    marginTop: 3,
+    marginTop: 1,
     marginLeft: -10,
   },
   getStartedContainer: {
@@ -186,43 +157,8 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     textAlign: 'center',
   },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
   navigationFilename: {
     marginTop: 5,
   },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
+
 });

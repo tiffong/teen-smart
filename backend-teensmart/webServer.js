@@ -44,7 +44,7 @@ var app = express();
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
 // the work for us. This EXPORTS your current working directory that webServer.js is in. (__dirname)
 app.use(express.static(__dirname));
-
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 /************************************************************************************************/
@@ -55,9 +55,15 @@ app.use(express.static(__dirname));
  * When making an AJAX GET request to the path '/', the web server responds with a simple message.
  */
 app.get('/', function (request, response) {
+    console.log("Index accessed");
     response.send('Simple web server of files from ' + __dirname);
 });
 
+app.post('/getProfile', (req, res) => {
+    console.log("getProfile accessed");
+    console.log(req.body);
+    res.send(req.body);
+});
 
 // DO NOT DELETE: Opens port for loading your webserver locally
 var server = app.listen(3000, function () {

@@ -5,6 +5,7 @@
   "main": "webServer.js",
   "start": "webServer.js",
   "scripts": {
+    "start": "node webServer.js",
     "test": "echo  echo Test your code by opening http://localhost:3000 in your browser."
   },
   "author": "",

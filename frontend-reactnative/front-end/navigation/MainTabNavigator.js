@@ -9,6 +9,8 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import GlobalSurvey from '../screens/newScreen';
+import LoginScreen from '../screens/Login';
+{/**/}
 
 export default TabNavigator(
   {
@@ -17,6 +19,9 @@ export default TabNavigator(
     },
     Links: {
       screen: LinksScreen,
+    },
+    Login: {
+      screen: LoginScreen,
     },
     Settings: {
       screen: SettingsScreen,
@@ -48,7 +53,7 @@ export default TabNavigator(
           case 'Survey':
             iconName =
               Platform.OS === 'ios' ? `ios-options${focused ? '' : '-outline'}` : 'md-options';
-                  
+
         }
         return (
           <Ionicons
