@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   View,
+  AsyncStorage,
 } from 'react-native';
 import jwtDecoder from 'jwt-decode';
 
@@ -34,11 +35,44 @@ function toQueryString(params) {
 }
 
 export default class Login extends React.Component {
-  state = {
-    username: undefined,
-    profile: undefined,
-    webServer: 'http://'+credentials.address+':3000',
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: undefined,
+      profile: undefined,
+      webServer: 'http://'+credentials.address+':3000',
+    };
+    this.checkState();
+  }
+
+
+  checkState = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@Login:key');
+      if (value !== null){
+      // We have data!!
+        console.log(value);
+        this.setState(previousState => {
+          return { username: value };
+        });
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  }
+
+  logout = async () => {
+    try{
+    this.setState(previousState => {
+      return {username: undefined};
+    });
+    await AsyncStorage.removeItem('@Login:key');
+    } catch (error) {
+      console.log("Error Clearing Data")
+      console.log(error)
+    }
+  }
 
   _loginWithAuth0 = async () => {
     const redirectUrl = AuthSession.getRedirectUrl();
@@ -104,32 +138,27 @@ export default class Login extends React.Component {
       return { username: responseData.name };
     });
 
-    }catch (error) { console.log(error);}
+	try {
+	  await AsyncStorage.setItem('@Login:key', responseData.sub);
+	} catch (error) {
+	  // Error saving data
+	}
 
-
-{/**
-    var request = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: formBody
-    }
-    console.log(request);
-    try{
-    let response = await fetch(this.state.webServer + "/getProfile", request); 
-    let responseData = await response.json();
-    console.log(responseData);
     }catch (error) { console.log(error);}
-**/}
 
   }
 
   render() {
     return (
       <View style={styles.container}>
+
+
         {this.state.username !== undefined ?
-          <Text style={styles.title}>Hi {this.state.username}!</Text> :
+          <View>
+            <Text style={styles.title}>Hi {this.state.username}!</Text> 
+            <Button title="Logout" onPress={this.logout} />
+          </View>
+          :
           <View>
             <Text style={styles.title}>Click to Login</Text>
             <Button title="Login with Auth0" onPress={this._loginWithAuth0} />

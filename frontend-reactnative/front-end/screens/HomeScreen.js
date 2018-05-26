@@ -1,8 +1,5 @@
-import React, { Component } from 'react';
-import { AppRegistry} from 'react-native';
+﻿import React, { Component } from 'react';
 import CustomMultiPicker from "react-native-multiple-select-list";
-import React from 'react';
-import { Button } from 'react-native';
 
 import {
   Image,
@@ -14,6 +11,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   View,
+  Button,
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
