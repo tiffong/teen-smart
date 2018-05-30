@@ -1,0 +1,17 @@
+surveys:
+
+active       timestamp    title      questions (separated by special character)                          
+true/false   xx-xx-xxxx   "Sample"   [ 
+                                         {category: "subtitle", 
+                                             subsection: [
+                                                 {question: "question", answers: ["a1", "a2", "a3", "a4"]}, ...
+                                             ]
+                                         }, ... 
+                                     ]
+
+users:
+
+id                   responses
+facebook|12345       [  {timestamp: "xx-xx-xxxx", title: "Sample", {category: "subtitle", answers: ["a1", ...]}, ...}, ... ]
+                                                                   Note: check for blank spaces
+                      to append: $push: {responses: {timestamp: "xx-xx-xxxx", title: "Sample", {category: "subtitle", answers: ["a1", ...]}, ...}}

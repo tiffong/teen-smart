@@ -17,7 +17,7 @@ export default TabNavigator(
     Home: {
       screen: HomeScreen,
     },
-    Links: {
+    Surveys: {
       screen: LinksScreen,
     },
     Login: {
@@ -26,9 +26,6 @@ export default TabNavigator(
     Settings: {
       screen: SettingsScreen,
     },
-    Survey: {
-      screen: GlobalSurvey,
-    }
 
 
   },

@@ -49,7 +49,7 @@ export default class Login extends React.Component {
 
   checkState = async () => {
     try {
-      const value = await AsyncStorage.getItem('@Login:key');
+      const value = await AsyncStorage.getItem('@Username:key');
       if (value !== null){
       // We have data!!
         console.log(value);
@@ -68,6 +68,7 @@ export default class Login extends React.Component {
       return {username: undefined};
     });
     await AsyncStorage.removeItem('@Login:key');
+    await AsyncStorage.removeItem('@Username:key');
     } catch (error) {
       console.log("Error Clearing Data")
       console.log(error)
@@ -140,6 +141,7 @@ export default class Login extends React.Component {
 
 	try {
 	  await AsyncStorage.setItem('@Login:key', responseData.sub);
+	  await AsyncStorage.setItem('@Username:key', responseData.name);
 	} catch (error) {
 	  // Error saving data
 	}

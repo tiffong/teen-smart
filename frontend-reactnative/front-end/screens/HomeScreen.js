@@ -12,6 +12,7 @@ import {
   TouchableHighlight,
   View,
   Button,
+  AsyncStorage,
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
@@ -28,6 +29,23 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+
+  checkState = async (loc) => {
+    try {
+      const value = await AsyncStorage.getItem('@Username:key');
+      if (value !== null){
+      // We have data!!
+        console.log(value);
+        this.props.navigation.navigate('Surveys', {survey: loc})
+      } else {
+        console.log("Not logged in");
+        this.props.navigation.navigate('Login')
+      }
+    } catch (error) {
+        return false;
+        this.props.navigation.navigate('Login')
+    }
+  }
 
   render() {
     return (
@@ -51,7 +69,7 @@ export default class HomeScreen extends React.Component {
 
           <TouchableOpacity
             style={styles.firstButton}
-            onPress={() =>  this.props.navigation.navigate('Links')}
+            onPress={() => this.checkState('Perfil de Riesgo')}
             underlayColor="gray"
           >
             <Text> Primera Encuesta </Text>
@@ -59,14 +77,14 @@ export default class HomeScreen extends React.Component {
 
           <TouchableOpacity
             style={styles.firstButton}
-            onPress={() =>  this.props.navigation.navigate('Links')}
+            onPress={() => this.checkState('Perfil de Salud')}
           >
             <Text> Segunda Encuesta </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.firstButton}
-            onPress={() =>  this.props.navigation.navigate('Links')}
+            onPress={() => this.checkState('Perfil de Proteccion')}
           >
             <Text> Tercera Encuesta </Text>
           </TouchableOpacity>

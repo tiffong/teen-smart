@@ -35,6 +35,9 @@ var async = require('async');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 
+//MongoDB
+var MongoClient = require('mongodb').MongoClient;
+var url = 'mongodb://localhost:27017';
 
 // Load Express
 var express = require('express');
@@ -64,6 +67,82 @@ app.post('/getProfile', (req, res) => {
     console.log(req.body);
     res.send(req.body);
 });
+
+app.post('/getSurvey', (req, res) => {
+    console.log("getSurvey accessed");
+    var data = req.body.sName;
+    data = data.trim().replace(/"/g,"");
+    console.log(data);
+
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("teen-smart");
+        dbo.collection("surveys").findOne({"active":true, "title":data}, function (err, response) {
+            if (err) throw err;
+            console.log(response);
+            res.send(response);
+            db.close();
+        });
+    });
+
+});
+
+//form to fill in/update surveys
+app.get('/inputSurvey', function (req, res) {
+    res.send("<form action='/inputSurvey' method='post'><textarea class='text' name='survey' cols='150' rows='30'></textarea><input style='display:block' type='submit' value='Submit'></form>");
+});
+app.post('/inputSurvey', function (req, res) {
+    var rawData = req.body.survey.toString();
+
+    var timestamp = new Date().toISOString();
+    var dbInput = '{"active": true, "timestamp": "'+timestamp+'", '
+    var title = ""
+    var questions = "["
+
+    console.log(typeof rawData)
+    var arr = rawData.split("\n");
+    for (var i = 0; i<arr.length; i++)
+    {
+        arr[i] = arr[i].trim()
+
+        var titleStart = arr[i].indexOf("title:")
+        if (titleStart == 0) title = arr[i].substring(6).trim();
+
+        if (arr[i].indexOf("category:") == 0)
+            if (questions == "[") questions+='{"category": "'+arr[i].substring(10).trim()+'", "subsection": [';
+            else questions+=']} ] }, {"category": "'+arr[i].substring(10).trim()+'", "subsection": [';
+
+        if (arr[i].indexOf("question:") == 0)
+            if (questions.substr(questions.length - 1) == "[") questions+='{"question": "'+arr[i].substring(10).trim()+'", "answers": [';
+            else questions+=']}, {"question": "'+arr[i].substring(10).trim()+'", "answers": [';
+
+        if (arr[i].indexOf("answer:") == 0)
+            if (questions.substr(questions.length - 1) == "[") questions+='"'+arr[i].substring(8).trim()+'"';
+            else questions += ', "'+arr[i].substring(8).trim()+'"';
+
+        console.log(arr[i]);
+    }
+
+    questions += "]}]}]";
+    dbInput += '"title": "'+title+'", "questions": '+questions+'}'
+    console.log(dbInput);
+    var dbJSON = JSON.parse(dbInput);
+    console.log(dbJSON);
+
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("teen-smart");
+        dbo.collection("surveys").insertOne(dbJSON, function (err, res) {
+            if (err) throw err;
+            console.log("1 document inserted");
+            db.close();
+        });
+    }); 
+
+    res.send(dbJSON);
+});
+
+
 
 // DO NOT DELETE: Opens port for loading your webserver locally
 var server = app.listen(3000, function () {
