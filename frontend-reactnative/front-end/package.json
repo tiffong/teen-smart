@@ -17,10 +17,11 @@
     "jwt-decode": "^2.2.0",
     "react": "16.3.0-alpha.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-26.0.0.tar.gz",
+    "react-native-auth0": "^1.2.2",
     "react-native-multiple-choice": "0.0.8",
     "react-native-multiple-select-list": "^1.0.4",
-    "react-native-auth0": "^1.2.2",
     "react-native-scripts": "^1.13.1",
+    "react-native-simple-radio-button": "^2.7.1",
     "react-navigation": "1.5.10"
   },
   "devDependencies": {
