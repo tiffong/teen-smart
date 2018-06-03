@@ -97,8 +97,7 @@ export default class LinksScreen extends React.Component {
             {this.fillData()}
           </ScrollView>
       }
-
-    </View>
+      </View>
 
     );
   }

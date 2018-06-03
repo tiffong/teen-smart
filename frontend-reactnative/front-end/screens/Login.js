@@ -7,8 +7,12 @@ import {
   Text,
   View,
   AsyncStorage,
+  Image,
+  TouchableOpacity,
 } from 'react-native';
 import jwtDecoder from 'jwt-decode';
+import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+
 
 /*
   You need to swap out the Auth0 client id and domain with
@@ -24,6 +28,18 @@ import jwtDecoder from 'jwt-decode';
 var credentials = require('./auth0-credentials');
 const auth0ClientId = credentials.clientId;
 const auth0Domain = credentials.domain;
+var webServer = 'http://'+credentials.address+':3000'
+
+
+/** This is for the raidio buttons*/
+var radio_props = [
+  {label: '1 vez por semana', value: 0 },
+  {label: '2 veces por semana', value: 1 },
+  {label: '3 o más veces por semana', value: 2 }
+
+];
+
+
 
   /**
    * Converts an object to a query string.
@@ -41,6 +57,7 @@ export default class Login extends React.Component {
     this.state = {
       username: undefined,
       profile: undefined,
+      picture: undefined,
       webServer: 'http://'+credentials.address+':3000',
     };
     this.checkState();
@@ -50,11 +67,13 @@ export default class Login extends React.Component {
   checkState = async () => {
     try {
       const value = await AsyncStorage.getItem('@Username:key');
+      const value2 = await AsyncStorage.getItem('@Profile:key');
+      const value3 = await AsyncStorage.getItem('@Picture:key');
       if (value !== null){
       // We have data!!
         console.log(value);
         this.setState(previousState => {
-          return { username: value };
+          return { username: value, profile:value2, picture:value3 };
         });
       }
     } catch (error) {
@@ -65,10 +84,11 @@ export default class Login extends React.Component {
   logout = async () => {
     try{
     this.setState(previousState => {
-      return {username: undefined};
+      return {username: undefined, profile: undefined, picture: undefined};
     });
     await AsyncStorage.removeItem('@Login:key');
     await AsyncStorage.removeItem('@Username:key');
+    await AsyncStorage.removeItem('@Picture:key');
     } catch (error) {
       console.log("Error Clearing Data")
       console.log(error)
@@ -96,6 +116,40 @@ export default class Login extends React.Component {
       this.handleParams(result.params);
     }
   }
+  
+  uploadNotif = async(value)  =>{
+      console.log("Uploading Notif Pref")
+      var profileHldr = await AsyncStorage.getItem('@Login:key');
+      var token = await AsyncStorage.getItem('@Token:key');
+      {/*getting profile information from backend*/}
+      console.log(profileHldr);
+      var details = {
+          'id': profileHldr,
+          'times':value+1,
+          'token':token,
+      };
+
+      var formBody = [];
+      for (var property in details) {
+         var encodedKey = encodeURIComponent(property);
+         var encodedValue = encodeURIComponent(details[property]);
+         formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+  
+      var request = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+        body: formBody
+      };
+  
+      try{
+          fetch(webServer + "/uploadNotif", request); 
+      }catch (error) { console.log(error);}
+  }
+
 
   handleParams = async (responseObj) => {
     if (responseObj.error) {
@@ -136,12 +190,13 @@ export default class Login extends React.Component {
     console.log(responseData);
 
     this.setState(previousState => {
-      return { username: responseData.name };
+      return { username: responseData.name, profile:responseData.sub, picture:responseData.picture };
     });
 
 	try {
 	  await AsyncStorage.setItem('@Login:key', responseData.sub);
 	  await AsyncStorage.setItem('@Username:key', responseData.name);
+	  await AsyncStorage.setItem('@Picture:key', responseData.picture);
 	} catch (error) {
 	  // Error saving data
 	}
@@ -153,18 +208,43 @@ export default class Login extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-
-
         {this.state.username !== undefined ?
+          <View style={styles.main}>
+            <Image
+            source={{uri:this.state.picture}}
+            style={styles.picture}
+            />
+            <Text style={styles.name}> {this.state.username} </Text>
+            <Text style={styles.titulo}>  Preferencias de notificaciones push  </Text>
+            <Text style={styles.text}> Mejora tu salud al activar las notificaciones Push que te ayudarán a ser la mejor versión de ti mismo. </Text>
+            <RadioForm
+              style={styles.radioButton}
+              radio_props={radio_props}
+              initial={0}
+              onPress={(value) => {this.uploadNotif(value)}}
+            />
+            <TouchableOpacity
+              style={styles.firstButton}
+              onPress={this.logout}
+              underlayColor="gray"
+            >
+            <Text style ={styles.buttonText}> Logout </Text>
+            </TouchableOpacity>
+          </View> 
+           :
           <View>
-            <Text style={styles.title}>Hi {this.state.username}!</Text> 
-            <Button title="Logout" onPress={this.logout} />
-          </View>
-          :
-          <View>
-            <Text style={styles.title}>Click to Login</Text>
-            <Button title="Login with Auth0" onPress={this._loginWithAuth0} />
-
+            <Text style={styles.title}>Bienvenido a</Text>
+            <Image
+              source={require('../assets/images/joven.png')}
+              style={styles.welcomeImage}
+            />
+            <TouchableOpacity
+              style={styles.firstButton}
+              onPress={this._loginWithAuth0}
+              underlayColor="gray"
+            >
+            <Text style ={styles.buttonText}> Iniciar Sessión </Text>
+            </TouchableOpacity>
           </View>
         }
       </View>
@@ -180,8 +260,77 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
+    marginTop: 10,
+    fontSize: 35,
+    color: 'gray',
+    lineHeight: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
     textAlign: 'center',
-    marginTop: 40,
+    marginBottom: 15,
+  },
+  firstButton: {
+      alignItems: 'center',
+      marginBottom: 40,
+      padding: 20,
+      width: 250,
+      backgroundColor: '#d91b5c',
+      borderRadius: 5,
+      marginLeft: 20,
+      marginTop: 15
+    },
+  buttonText: {
+    color: 'white',
+  },
+  welcomeImage: {
+    width: 300,
+    height: 120,
+    resizeMode: 'contain',
+    marginTop: 1,
+    marginLeft:40,
+    marginLeft: -10,
+  },
+  name:{
+    marginTop: 10,
+    fontSize: 35,
+    color: 'rgba(96,100,109, 1)',
+    lineHeight: 35,
+  },
+  picture: {
+    marginTop: 30,
+    marginBottom: 10,
+    width: 100,
+    height: 100,
+    borderRadius: 15,
+  },
+  main:{
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  titulo:{
+    marginTop: 23,
+    fontSize: 20,
+    color: 'white',
+    backgroundColor:'#d91b5c',
+    lineHeight: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  text:{
+    marginTop: 20,
+    marginLeft: 30,
+    marginRight: 30,
+    fontSize: 17,
+    color: '#ee8424',
+    lineHeight: 17,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  radioButton:{
+    marginTop: 15,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
   },
 });

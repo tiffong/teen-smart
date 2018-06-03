@@ -14,6 +14,7 @@ import {
   Button,
   AsyncStorage,
 } from 'react-native';
+
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
@@ -36,14 +37,14 @@ export default class HomeScreen extends React.Component {
       if (value !== null){
       // We have data!!
         console.log(value);
-        this.props.navigation.navigate('Surveys', {survey: loc})
+        this.props.navigation.navigate('Survey', {survey: loc})
       } else {
         console.log("Not logged in");
-        this.props.navigation.navigate('Login')
+        this.props.navigation.navigate('Profile')
       }
     } catch (error) {
         return false;
-        this.props.navigation.navigate('Login')
+        this.props.navigation.navigate('Profile')
     }
   }
 
@@ -84,7 +85,7 @@ export default class HomeScreen extends React.Component {
 
           <TouchableOpacity
             style={styles.firstButton}
-            onPress={() => this.checkState('Perfil de Proteccion')}
+            onPress={() => this.checkState('Perfil de Protección')}
           >
             <Text> Tercera Encuesta </Text>
           </TouchableOpacity>

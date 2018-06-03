@@ -17,16 +17,12 @@ export default TabNavigator(
     Home: {
       screen: HomeScreen,
     },
-    Surveys: {
-      screen: LinksScreen,
-    },
-    Login: {
+    Profile: {
       screen: LoginScreen,
     },
-    Settings: {
-      screen: SettingsScreen,
+    Survey: {
+      screen: GlobalSurvey,
     },
-
 
   },
   {
